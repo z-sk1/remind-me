@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>remind me</title>
+        <link rel = "stylesheet" href = "style/styles.css">
+    </head>
+
+    <body>
+        <header>
+            <h1 class = "typing colored">remind me</h1>
+
+            <div class = "dropdown">
+                <button class = "dropbtn">
+                    Menu <span class = "arrow">▼</span>
+                </button>
+                <div class = "dropdown-content">
+                    <a href = "#" onclick = "showSection('add')">Add</a>
+                    <a href = "#" onclick = "showSection('notes')">Notes</a>
+                    <a href = "#" onclick = "showSection('reminders')">Reminders</a>
+                </div>
+            </div>
+
+            <div class = "dropdown">
+                <button class = "dropbtn">
+                    Websites <span class = "arrow">▼</span>
+                </button>
+                <div class = "dropdown-content">
+                    <a href = "https://z-sk1.github.io" target = "_blank">z-sk's corner</a>
+                    <a href = "https://z-sk1.github.io/shrtnd" target = "_blank">shrtnd</a>
+                    <a href = "https://z-sk1.github.io/weathery" target = "_blank">weathery</a>
+                    <a href = "https://z-sk1.github.io/easy-define" target = "_blank">easy define</a>
+                </div>
+            </div>
+
+            <button onclick = "showSection('signup')">Sign Up</button>
+            <button onclick = "showSection('login')">Log In</button>
+        </header>
+
+        <section id = "add">
+            <h2>Add Note or Reminder</h2>
+            <div class = "input-group">
+                <div class = "dropdown">
+                    <button class = "dropbtn">
+                        Add <span class = "arrow">▼</span>
+                    </button>
+                    <div class = "dropdown-content">
+                        <a href = "#" onclick = "openForm('noteForm')">New Note</a>
+                        <a href = "#" onclick = "openForm('reminderForm')">New Reminder</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id = "noteForm" style = "display:none;">
+                <h3>New Note</h3>
+                <div class = "input-group">
+                    <textarea id = "noteText" placeholder = "Write your note here..."></textarea>
+                    <button onclick = "saveNote()">Save Note</button>
+                </div>
+            </div>
+
+            <div id = "reminderForm" style = "display:none;">
+                <h3>New Reminder</h3>
+                <div class = "input-group">
+                    <input type = "text" placeholder = "Write your reminder here..." id = "reminderText">
+                    <input type = "datetime-local" id = "reminderDate">
+                    <button onclick = "saveReminder()">Save Reminder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id = "notes">
+            <h2>Notes</h2>
+            <div id = "notesList">
+
+            </div>
+        </section>
+
+        <section id = "reminders">
+            <h2>Reminders</h2>
+            <div id = "remindersList">
+
+            </div>
+        </section>
+
+        <section id = "signup">
+            <div class = "input-group">
+                <input type = "text" placeholder = "Type in your email address..." id = "signUpEmail">
+                <input type = "text" placeholder = "Create a username..." id = "signUpUsername">
+                <input type = "text" placeholder = "Create a password..." id = "signUpPassword">
+                <button>Create Account</button>
+            </div>
+        </section>
+
+        <section id = "login">
+            <input type = "text" placeholder = "Type in your username or email address..." id = "loginUsername">
+            <input type = "text" placeholder = "Type in your password..." id = "loginPassword">
+            <button>Login</button>
+        </section>
+
+        <script src = "scripts/add.js"></script>
+        <script src = "scripts/onClick.js"></script>
+        <script src = "scripts/typing.js"></script>
+        <script src = "scripts/show.js"></script>
+        <script src = "scripts/delete.js"></script>
+    </body>
+</html>
