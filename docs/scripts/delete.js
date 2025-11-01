@@ -1,13 +1,47 @@
-function deleteNote(idx) {
-    const notes = JSON.parse(localStorage.getItem("notes") || "[]");
-    notes.splice(idx, 1);
-    localStorage.setItem("notes", JSON.stringify(notes));
-    showNotes();
+async function deleteNote(id) {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        alert("Please log in first!");
+        return;
+    }
+
+    const res = await fetch(`${API_BASE}/notes/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (res.ok) {
+        console.log("Note deleted successfully!")
+        getAllNotes();
+    } else {
+        const data = await res.json();
+        alert("Failed to delete note:", data.error || res.StatusText);
+    }
 }
 
-function deleteReminder(idx) {
-    const reminders = JSON.parse(localStorage.getItem("reminders") || "[]");
-    reminders.splice(idx, 1);
-    localStorage.setItem("reminders", JSON.stringify(reminders));
-    showReminders();
+async function deleteReminder(id) {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
+        alert("Please log in first!");
+        return;
+    }
+
+    const res = await fetch(`${API_BASE}/reminders/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+
+    if (res.ok) {
+        console.log("Reminder deleted successfully!")
+        getAllReminders();
+    } else {
+        const data = await res.json();
+        alert("Failed to delete reminder:", data.error || res.StatusText);
+    }
 }

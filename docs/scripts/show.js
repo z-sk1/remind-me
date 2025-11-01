@@ -1,20 +1,60 @@
+let notes = [];
+let reminders = [];
+
+function formatDateTime(isoString) {
+  const date = new Date(isoString);
+
+  // Use browser locale and formatting options
+  return date.toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
+async function getAllNotes() {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE}/notes`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const data = await res.json();
+    notes = data.notes;
+    showNotes();
+}
+
+async function getAllReminders() {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${API_BASE}/reminders`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const data = await res.json();
+    reminders = data.reminders;
+    showReminders();
+}
+
 function showNotes() {
     const container = document.getElementById("notesList");
-    const notes = JSON.parse(localStorage.getItem("notes") || "[]");
-
-    if (notes.length === 0) {
-        container.innerHTML = "<p>No notes yet.</p>";
-        return;
-    }
 
     container.innerHTML = "";
+    console.log("Notes data:", notes);
     notes.forEach((note, idx) => {
         const div = document.createElement("div");
         div.className = "note";
         div.innerHTML = `
-            <p>${note.text}</p>
-            <small>Saved on: ${note.date}</small>
-            <button onclick = "deleteNote(${idx})">Delete</button>
+            <h3>${note.title}</h3>
+            <p>${note.content}</p>
+            <small>Saved on: ${formatDateTime(note.created_at)}</small><br>
+            <button onclick = "deleteNote(${note.id})">Delete</button>
+            <button onclick = "editNote(${note.id})">Edit</button>
         `;
         container.appendChild(div);
     });
@@ -22,22 +62,18 @@ function showNotes() {
 
 function showReminders() {
     const container = document.getElementById("remindersList");
-    const reminders = JSON.parse(localStorage.getItem("reminders") || "[]");
-
-    if (reminders.length === 0) {
-        container.innerHTML = "<p>No reminders yet.</p>";
-        return;
-    }
 
     container.innerHTML = "";
     reminders.forEach((reminder, idx) => {
         const div = document.createElement("div");
         div.className = "reminder";
         div.innerHTML = `
-            <p>${reminder.text}</p>
-            <small>For: ${reminder.date}</small>
-            <small>Saved on: ${reminder.saveDate}</small>
-            <button onclick = "deleteReminder(${idx})">Delete</button>
+            <h3>${reminder.title}</h3>
+            <p>${reminder.content}</p>
+            <small>For: ${formatDateTime(reminder.due)}</small><br>
+            <small>Saved on: ${formatDateTime(reminder.created_at)}</small><br>
+            <button onclick = "deleteReminder(${reminder.id})">Delete</button>
+            <button onclick = "editReminder(${reminder.id})">Edit</button>
         `;
         container.appendChild(div);
     })

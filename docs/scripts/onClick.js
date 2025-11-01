@@ -7,8 +7,8 @@ function showSection(id) {
   // show the chosen one
   document.getElementById(id).classList.add("active");
 
-  if (id === "notes") showNotes();
-  if (id === "reminders") showReminders();
+  if (id === "notes") getAllNotes();
+  if (id === "reminders") getAllReminders();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
