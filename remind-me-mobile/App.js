@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, Text, View } from 'react-native';
+import { AddTab } from './tabs/AddTab';
 
 const Tab = createBottomTabNavigator();
 const API_BASE = "";
@@ -11,6 +12,7 @@ export default function App() {
       <Tab.Navigator>
         <Tab.Screen
           name = "Add"
+          component = {AddTab}
         />
 
         <Tab.Screen
