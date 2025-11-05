@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { styles } from '../App';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 export default function AddTab() {
     const [addNoteMenu, setAddNoteMenu] = useState(false);
@@ -12,10 +13,13 @@ export default function AddTab() {
     const [noteContentTxtFocused, setNoteContentTxtFocused] = useState(false);
     const [noteContent, setNoteContent] = useState('');
     const [noteTitle, setNoteTitle] = useState('');
+    const [noteBackBtnFocused, setNoteBackBtnFocused] = useState(false);
     const [reminderContentTxtFocused, setReminderContentTxtFocused] = useState(false);
     const [reminderContent, setReminderContent] = useState('');
     const [reminderTitle, setReminderTitle] = useState('');
-    const [reminderDate, setReminderDate] = useState('');
+    const [reminderDateBtnFocused, setReminderDateBtnFocused] = useState(false);
+    const [reminderDate, setReminderDate] = useState(new Date());
+    const [reminderBackBtnFocused, setReminderBackBtnFocused] = useState(false);
 
     return (
         <View style = {styles.container}>
@@ -42,6 +46,18 @@ export default function AddTab() {
                 >
                     <Text style = {styles.buttonText}>Save</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                style = {[styles.button, noteBackBtnFocused && styles.buttonPressed]}
+                onPressIn = {() => setNoteBackBtnFocused(true)}
+                onPressOut = {(() => setNoteBackBtnFocused(false))}
+                onPress = {() => {
+                    setAddNoteMenu(false);
+                    setAddReminderMenu(false);
+                }}
+                >
+                    <Text style = {styles.buttonText}>Back</Text>
+                </TouchableOpacity>
             </View>
 
         ) : addReminderMenu ? (
@@ -53,8 +69,9 @@ export default function AddTab() {
                     placeholder = "Type in the reminder's content..."
                     value = {reminderContent}
                     onChangeText = {setReminderContent}
-                    
                 />
+
+                
             </View>
 
         ) : (
