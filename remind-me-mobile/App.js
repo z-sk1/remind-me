@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AddTab } from './tabs/AddTab';
 
 const Tab = createBottomTabNavigator();
-const API_BASE = "";
+export const API_BASE = "http://192.168.1.179:8080";
 
 export default function App() {
   return (

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
-import { styles } from '../App';
+import { StyleSheet, Text, TouchableOpacity, Alert, Platform } from 'react-native';
+import { styles, API_BASE } from '../App';
 import DateTimePicker from '@react-native-community/datetimepicker'
 
 export default function AddTab() {
@@ -12,12 +12,11 @@ export default function AddTab() {
     const [saveReminderBtnFocused, setSaveReminderBtnFocused] = useState(false);
     const [noteContentTxtFocused, setNoteContentTxtFocused] = useState(false);
     const [noteContent, setNoteContent] = useState('');
-    const [noteTitle, setNoteTitle] = useState('');
     const [noteBackBtnFocused, setNoteBackBtnFocused] = useState(false);
     const [reminderContentTxtFocused, setReminderContentTxtFocused] = useState(false);
     const [reminderContent, setReminderContent] = useState('');
-    const [reminderTitle, setReminderTitle] = useState('');
     const [reminderDateBtnFocused, setReminderDateBtnFocused] = useState(false);
+    const [reminderDateShow, setReminderDateShow] = useState(false);
     const [reminderDate, setReminderDate] = useState(new Date());
     const [reminderBackBtnFocused, setReminderBackBtnFocused] = useState(false);
 
@@ -71,7 +70,50 @@ export default function AddTab() {
                     onChangeText = {setReminderContent}
                 />
 
-                
+                <TouchableOpacity
+                style = {[styles.button, reminderDateBtnFocused && styles.buttonPressed]}
+                onPressIn = {() => setReminderDateBtnFocused(true)}
+                onPressOut = {() => setReminderDateBtnFocused(false)}
+                onPress = {() => setReminderDateShow(true)}
+                >
+                    <Text style = {styles.buttonText}>Date & Time</Text>
+                </TouchableOpacity>
+
+                {reminderDateShow && (
+                    <DateTimePicker
+                        value = {reminderDate}
+                        mode = "datetime"
+                        display = {Platform.OS === "ios" ? "inline" : "default"}
+                        onChange= {(event, selectedDate) => {
+                            if (date === undefined) return;
+                            
+                            setReminderDateShow(false);
+                            setReminderDate(selectedDate);
+                        }}
+                    />
+                )}
+
+                <TouchableOpacity
+                style = {[styles.button, saveReminderBtnFocused && styles.buttonPressed]}
+                onPressIn = {() => setSaveReminderBtnFocused(true)}
+                onPressOut = {() => setSaveReminderBtnFocused(false)}
+                onPress = {saveReminder}
+                >
+                    <Text style = {styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                style = {[styles.button, reminderBackBtnFocused && styles.buttonPressed]}
+                onPressIn = {() => setReminderBackBtnFocused(true)}
+                onPressOut = {() => setReminderBackBtnFocused(false)}
+                onPress = {() => {
+                    setAddNoteMenu(false);
+                    setAddReminderMenu(false);
+                }}
+                >
+                    <Text style = {styles.buttonText}>Back</Text>
+                </TouchableOpacity>
+
             </View>
 
         ) : (
@@ -100,6 +142,79 @@ export default function AddTab() {
     );
 
     async function saveNote() {
-        
+        const text = noteContent.trim()
+
+        if (!text) {
+            Alert.alert("Missing content!");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            Alert.alert("Please login first!");
+            return;
+        }
+
+        const title = Alert.prompt("Enter a title? (optional)") || "";
+
+        const res = await fetch(`${API_BASE}/notes`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                title,
+                content: text,
+            })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            Alert.alert("Note saved!")
+            setNoteContent('');
+        } else {
+            Alert.alert(data.error || "Failed to save note")
+        }
+    }
+
+    async function saveReminder() {
+        const text = reminderContent.trim()
+        const date = reminderDate;
+
+        if (!text || !date) {
+            Alert.alert("Missing content or date!");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            Alert.alert("Please login first!");
+            return;
+        }
+
+        const title = Alert.prompt("Enter a title? (optional)");
+
+        const res = await fetch(`${API_BASE}/reminders`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                title,
+                content: text,
+                date: new Date(date).toISOString()
+            }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            Alert.alert("Reminder saved!");
+            setReminderContent('');
+            setReminderDate(new Date());
+        } else {
+            Alert.alert(data.error || "Failed to save reminder!");
+        }
     }
 }
