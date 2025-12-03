@@ -26,7 +26,7 @@ async function editReminder(id) {
     const title = prompt("New title?");
     const content = prompt("New content?");
     const due = prompt("New date? (dd/mm/yyyy) (HH:MM) (AM/PM)");
-    if (!title && !content && !due);
+    if (!title && !content && !due) return;
 
     const token = localStorage.getItem("token");
     const res = await fetch(`${API_BASE}/reminders/${id}`, {
